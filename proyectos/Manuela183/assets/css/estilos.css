@@ -1,6 +1,6 @@
 
 /* Importar fuente personalizada */
-@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+@import url('https://fonts.googleapis.com/css?family=Raleway');
 
 /* Normalizar documento */
 * {
@@ -8,7 +8,8 @@
 }
 
 body {
-    font-family: 'Lato', 'Arial', sans-serif;
+    font-family: 'Raleway', sans-serif;
+    font-size:16px;
 }
 
 /* Definición de CSS Variables */
@@ -67,7 +68,8 @@ body {
     top: 0;
     width: 250px;
     height: 100vh;
-    border-right: 1px solid var(--c-primario);
+    border-right: 1px solid var(--c-claro);
+    background-color: var(--c-oscuro);
     left: -300px;
     transition: left 0.3s ease-in-out;
 }
@@ -77,12 +79,12 @@ body {
 }
 
 .menu .menu-links li{
-    border-bottom: 1px solid var(--c-oscuro);
+    border-bottom: 1px solid var(--c-claro);
     transition: background-color 0.5s; 
 }
 
 .menu .menu-links li:hover{
-    background: var(--c-oscuro);
+    background: var(--c-secundario);
 }
 
 .menu .menu-links li a {
@@ -146,10 +148,18 @@ body {
     color: var(--c-claro);
 }
 
+.nav .nav-links{
+    display:none;
+}
+
+.nav .nav-links.mostrar{
+    display: block;
+}
+
 .nav .nav-links li {
     text-align: center;
     margin: 0 auto;
-    transition: background 0.5s;
+    transition: background-color 0.5s;
 }
 .nav .nav-links li:hover {
     background: var(--c-terciario);
