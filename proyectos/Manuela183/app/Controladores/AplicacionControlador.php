@@ -3,6 +3,7 @@
 namespace App\Controladores;
 
 use Slim\Views\Twig;
+use App\servicios\ActividadServicio;
 
 class AplicacionControlador {
     private $view;
@@ -11,5 +12,15 @@ class AplicacionControlador {
         $this->view = $view;
     }
 
-    //public function paginaAplicacion($request, $response)
+    public function paginaAplicacion($request, $response) { 
+
+        return $this->view->render($response, 'aplicacion.twig');
+    }
+
+    public function consultarActividades($request, $response, ActividadServicio $actividadServicio) {
+        $actividades = $actividadServicio->consultarActividades();
+
+        return $response->withJson(['actividades' => $actividades],200);
+
+    }
 }

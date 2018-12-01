@@ -11,6 +11,7 @@ btnMenuClose.addEventListener("click", ocultarMenuLateral);
 btnNavToggle.addEventListener("click", toggleNavLinks);
 window.addEventListener("resize", arreglarNavLinks); /*Arreglar cambio de menú principal según tamaño de pantalla */
 
+document.addEventListener("DOMContentLoaded",cargarDatos);
 /*===========================FUNCIONES===========================================*/
 
 function mostrarMenuLateral(){ /*Funciones para ejecutar acción*/
@@ -31,23 +32,34 @@ function arreglarNavLinks(){
     }
 }
 
-function cargarDatos(){
-    var datos =[
-        /*Links menú lateral*/
-        {url:"//unal.edu.co", nombre: "UNAL", instruccion: "Instrucción UNAL"},
-        {url:"//css-trick.com", nombre: "CSS Tricks", instruccion: "Instrucción CSS Tricks"},
-        {url:"//rogerdudler.github.io/git-guide/index.es.html", nombre: "Git: guía sencilla", instruccion: "Instrucción Git: Guía Sencilla"},
-        {url:"assets/uploads/actividades/actividad-normal/index.html", nombre: "Determinar operación", instruccion: "Fíjate en los números y selecciona la operación que da el resultado"},
-        {url:"assets/uploads/actividades/actividad-canvas/index.html", nombre: "Agrupar", instruccion: "Agrupa los animales"},
-    ];
-    return datos;
+function cargarDatos() {
+    var url = menuLateral.dataset.url;
+    var datos = [];
+    axios.get(url)
+        .then(function(res) {
+            var actividades = res.data.actividades; //cumple
+            if (actividades.length > 0) {
+                actividades.forEach(function(actividad) {
+                    var obj = {
+                        url: actividad.rutaArchivo,
+                        nombre: actividad.nombre,
+                        instruccion: actividad.instruccion
+                    };
+                    datos.push(obj);
+                });
+                
+            }
+        } ).catch(function(err) {
+            console.log(err.response);//no me cumplen
+        }).finally(function() {
+            generarLinks(datos);
+        });
 }
 
-function generarLinks(){
+function generarLinks(links){
     var menuLinks=document.getElementById("menu-links");
     menuLinks.innerHTML="";
 
-    var links = cargarDatos();
     if (links.length >0){
         //Llegaron datos
         for (var i=0; i<links.length; i++){
@@ -71,7 +83,10 @@ function generarLinks(){
         itemLista.appendChild(texto);
         menuLinks.appendChild(itemLista);
     }
+    function enviarPuntaje(puntaje) {
+        alert( "tu puntaje es: "+ puntaje *100);
+    }
 }
 
-generarLinks();
+
 
