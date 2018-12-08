@@ -13,7 +13,7 @@ var csrfValue = document.getElementById('csrfvalue');
 btnAbrirModal.addEventListener("click", mostrarModal);
 btnCerrarModal.addEventListener("click", cerrarModal);
 
-// cargarActividad.submit
+formCargarActividad.addEventListener("submit",cargarActividad);
 
 // Definición de funciones personalizadas
 function mostrarModal() {
@@ -25,7 +25,37 @@ function cerrarModal() {
     reiniciarFormCargarActividad();
 }
 
-// function cargarActividad
+function cargarActividad(evento) {
+    evento.preventDefault();
+    var form = evento.target;
+  
+    var url = form.action;
+    var datos = new FormData(form);
+
+    axios.post(url, datos, { headers: {'Content-Type': 'multipart/form-data'}  })
+          .then(function(res){
+            if(res.data.errores) {
+                mostrarErroresFormCargarActividad(form, res.data.errores);
+            } else if(res.data.actividad) {
+                var actividad = {
+                    id: res.data.actividad.id,
+                    nombre: form.elements.nombre.value,
+                    instruccion: form.elements.instruccion.value,
+                    descripcion: form.elements.descripcion.value,
+                    categoriaId: form.elements.categoria.value,
+                    rutaArchivo: res.data.actividad.rutaArchivo
+                };
+                agregarActividadTabla(actividad);
+                reiniciarFormCargarActividad();
+            }
+          })
+          .catch(function(err) {
+              console.log(err.response);
+              
+          });
+    
+    //axios devuelve una promesa de javascrip!!
+}
 
 function mostrarErroresFormCargarActividad(form, errores) {
     if (errores.nombre) {

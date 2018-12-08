@@ -3,6 +3,7 @@ var menuLateral=document.getElementById("menu-lateral");
 var btnMenuClose=document.getElementById("btn-menu-close");
 var btnNavToggle =document.getElementById("btn-nav-toggle");
 var navLinks= document.getElementById("nav-links");
+var textoInstruccion = document.getElementById("texto-instruccion");
 
 /*===========================EVENTOS=============================================*/
 /*Cuando se llama a la función no se copia nada en paréntesis*/
@@ -70,9 +71,11 @@ function generarLinks(links){
             /*link.target= "_blank"; // Abrir links url en una nueva pestaña en vez de redireccionar*/
             link.target="main-iframe";//Abrir link url en el iframe
             link.appendChild(texto);
-
+            link.dataset.instruccion = links[i].instruccion;
             var itemLista= document.createElement("li");
             itemLista.appendChild(link);
+
+            link.addEventListener("click",actualizarContenido);
 
             menuLinks.appendChild(itemLista);
 
@@ -83,10 +86,16 @@ function generarLinks(links){
         itemLista.appendChild(texto);
         menuLinks.appendChild(itemLista);
     }
+}
+
+    function actualizarContenido (evento) {
+        textoInstruccion.textContent = evento.target.dataset.instruccion;
+        //para actualizar la instruccion cada vez que se hace click
+    }
     function enviarPuntaje(puntaje) {
         alert( "tu puntaje es: "+ puntaje *100);
     }
-}
+
 
 
 

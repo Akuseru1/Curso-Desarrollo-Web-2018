@@ -16,11 +16,43 @@ class AdminControlador {
         $this->actividadServicio = $actividadServicio;
     }
 
-    //public function paginaDashboard($request, $response)
+    public function paginaAdministracion($request, $response) {
+        $datos = [
+            'categorias' => $this->actividadServicio->getCategorias(),
+            'actividades' => $this->actividadServicio->consultarActividades()
+        ];
+        return $this->view->render($response, 'admin.twig', $datos);
+    }
+
+
 
     //public function consultarActividades($request, $response)
 
-    //public function cargarActividad($request, $response, ValidarCargaActividad $validador)
+    public function cargarActividad($request, $response, ValidarCargaActividad $validador) {
+        $datos = $request->getParams();
+        $archivos = $request->getUploadedFiles();
 
-    //public function eliminarActividad($request, $response)
+        $errores = $validador->validarDatos($datos,$archivos['archivo']);
+        if($errores) {
+            return $response->withJson(['errores'=> $errores],200);
+        }
+
+        $resultado = $this->actividadServicio->cargarActividad($datos, $archivos['archivo']);
+
+        return $response->withJson($resultado, 200);
+    }
+
+    public function eliminarActividad($request, $response) {
+        $accion = $request->getQueryParam('accion');
+        if($accion == 'ELIMINAR') {
+        $actividadId = $request->getQueryParam('id');
+        $resultado = [
+        'eliminado' => $this->actividadServicio->eliminarActividad($actividadId, true)
+        ];
+        
+        return $response->withJson($resultado, 200);
+        }
+        
+        return $response->withJson(['error' => 'Petición inválida'], 404);
+        }
 }

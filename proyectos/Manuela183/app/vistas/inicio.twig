@@ -12,8 +12,8 @@
         <main class="main">
             <div class="banner">
                 <h1 class="titulo"> Repositorio de Actividades Educativas</h1>
-                <a href = "#" class="link link-aplicacion">Abrir aplicación</a>
-                <a href = "#" class="link link-admin">Administrar</a>
+                <a href = "{{path_for('aplicacion')}}" class="link link-aplicacion">Abrir aplicación</a>
+                <a href = "{{path_for('admin')}}" class="link link-admin">Administrar</a>
             </div>
         </main>
         {{ include('fragmentos/footer.twig') }}

@@ -3,8 +3,8 @@
 {% block titulo %}Administración del Repositorio{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <!-- Link CSS -->
+{{parent() }}
+<link rel="stylesheet" href="{{constant('APP_URL') }}assets/css/admin.css">
 {% endblock %}
 
 {% block contenido %}
@@ -16,8 +16,8 @@
         </header>
         <main class="main">
             <div class="contenedor-tabla">
-                <table class="tabla-actividades" id="tabla-actividades">
-                    <thead>
+                <table class="tabla-actividades" id="tabla-actividades" data-urleliminar="{{ path_for('admin.eliminar.actividad') }}">
+                    <thead> <!-- nunca utilizar tablas para hacer layouts-->
                         <tr>
                             <th>No.</th>
                             <th>Nombre</th>
@@ -29,16 +29,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- For Loop -->
+                        {% for actividad in actividades %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ actividad.nombre }}</td>
+                                <td>{{ actividad.instruccion }}</td>
+                                <td>{{ actividad.descripcion }}</td>
+                                <td>{{ actividad.categoriaId }}</td>
+                                <td>{{ actividad.rutaArchivo }}</td>
+                                <td>
+                                    <button class="btn rojo btn-eliminar" onclick="alert('Eliminando');">
+                                        <i  class="fe fe-trash"></i>
+                                    </button>    
+                                </td>
+
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-                <h2 class="tabla-vacia">El repositorio aún no posee actividades, sube una!</h2>
+                <h2 class="tabla-vacia {% if actividades|length < 1 %} mostrar {% endif %}">El repositorio aún no posee actividades, sube una!</h2>
             </div>
 
             <!-- Modal cargar actividad -->
             <div class="modal-overlay" id="modal-cargar-actividad">
                 <div class="modal-contenido">
-                    <form id="form-cargar-actividad">
+                    <form id="form-cargar-actividad" method="POST" action="{{ path_for('admin.actividades') }}" enctype="multipart/form-data">
                         <ul class="controles">
                             <li>
                                 <label for="nombre">Nombre</label>
@@ -58,7 +73,11 @@
                             <li>
                                 <label for="categoria">Categoría</label>
                                 <select name="categoria" id="categoria">
-                                    <!-- Categorias -->
+                                    
+                                    {% for categoria in categorias %}
+                                        <option value="{{categoria.id}}">{{ categoria.nombre }}</option>
+                                    {% endfor %}
+
                                 </select>
                                 <span class="info"></span>
                             </li>
@@ -73,14 +92,16 @@
                             </li>
                         </ul>
                         <!-- campos CSRF -->
+                        {% include "fragmentos/campos-csrf.twig" %}
                     </form>
                 </div>
             </div>
         </main>
     </div>
-    <!-- include footer -->
+    {% include "fragmentos/footer.twig" %}
 {% endblock %}
 
 {% block javascripts %}
-    <!-- parent JS  y propio -->
+{{parent() }}
+<script src="{{ constant('APP_URL') }}assets/js/admin.js"></script>
 {% endblock %}

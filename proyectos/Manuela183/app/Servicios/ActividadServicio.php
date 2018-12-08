@@ -19,11 +19,21 @@ private $actividadRepo;
 
     protected static $ARCHIVO_INICIO_ACTIVIDAD = 'index.html';
 
+    //inyeccion de dependencias
     public function __construct(ActividadRepo $actividadRepo) {
         $this->actividadRepo = $actividadRepo;
+        $this->categorias = $this->actividadRepo->consultarCategorias();
     }
 
-    //private function consultarCategorias
+    private function consultarCategorias(){
+        $consulta = $this->actividadRepo->consultarCategorias();
+        $categorias = [];
+        foreach ($consulta as $categoria) {
+            $cat = new Categoria($categoria);
+            array_push($categorias, $cat);
+        }
+        return $categorias;
+    }
 
     public function getCategorias() {
         return $this->categorias;
@@ -99,6 +109,8 @@ private $actividadRepo;
                 break;
             }
         }
+
+        return 'biologia';//TODO verificar la carga de las categorias y eliminar este return
 
         return $directorio;
     }
@@ -202,5 +214,17 @@ private $actividadRepo;
      * Elimina una actividad de la BD según su ID.
      * Si el segundo paramétro es TRUE, se eliminan los archivos de la actividad según su ruta.
      */
-    //public function eliminarActividad
+    public function eliminarActividad($actividadId, $eliminarArchivos = false) {
+        if($eliminarArchivos) {
+        $consulta = $this->actividadRepo->consultarActividadPorId($actividadId);
+        $directorio = explode(self::$DIR_ACTIVIDADES, $consulta['ruta_archivo']);
+        $directorio = explode(self::$ARCHIVO_INICIO_ACTIVIDAD, $directorio[1]);
+        $directorio = UPLOADS_DIR . self::$DIR_ACTIVIDADES . $directorio[0];
+        if(isset($directorio) && !empty($directorio) && strlen($directorio) > 1) {
+        UtilidadesGenerales::eliminarDirectorio($directorio);
+        }
+        }
+        
+        return $this->actividadRepo->eliminarActividad($actividadId);
+        }
 }
